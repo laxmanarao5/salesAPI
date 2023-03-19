@@ -41,7 +41,7 @@ exports.statisticsByMonth=expressAsyncHandler(async(req,res)=>{
     res.send({message:"Data fetched sucessfully",payload:result})
 })
 
-//category range
+//category - Pie chart
 exports.statisticsByCategory=expressAsyncHandler(async(req,res)=>{
     
     //month from parameters
@@ -58,7 +58,7 @@ exports.statisticsByCategory=expressAsyncHandler(async(req,res)=>{
     res.send({message:"Data fetched sucessfully",payload:result})
 })
 
-//items by price
+//items by price for Bar graph
 exports.statisticsOfItems=expressAsyncHandler(async(req,res)=>{
     
     //month from parameters
@@ -79,16 +79,22 @@ exports.statisticsOfItems=expressAsyncHandler(async(req,res)=>{
 //final report
 exports.finalReport=expressAsyncHandler(async(req,res)=>{
     
-    //month from parameters
+      //month from parameters
     let month=req.params.month
     //pattern
     let pattern="_____"+month+"%"
     //query
-    
+    let query="select * from sales where monthname(dateOfSale)='"+month+"'"
     //running query
-    let result= await sequelize.query(query, { type: QueryTypes.SELECT ,
+    //query
+    let query2="select category,count(*) as items from sales where monthname(dateOfSale)='"+month+"' group by category"
+    //running query
+    let montlyreport= await sequelize.query(query, { type: QueryTypes.SELECT ,
     model:Sales})
+    let pieChart= await sequelize.query(query2, { type: QueryTypes.SELECT ,
+        model:Sales})
+
     
     //send response
-    res.send({message:"Data fetched sucessfully",payload:result})
+    res.send({message:"Data fetched sucessfully",payload:{report:montlyreport,pieChart:pieChart}})
 })

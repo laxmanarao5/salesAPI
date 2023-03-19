@@ -1,14 +1,14 @@
+### Initialize database
 GET http://localhost/sales/initialize
 
-
-###
+### Monthly report
 GET http://localhost/sales/statistics/month/July
 
-###
+### Bar graph
 GET http://localhost/sales/items/month/July
 
-###
+### Pie chart
 GET http://localhost/sales/category/month/July
 
-###
+###  Final report
 GET http://localhost/sales/sales-report/month/July
