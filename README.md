@@ -1,7 +1,6 @@
 # Sales API
 
-### Description:-  
-projectPulse is a projects tracking tool for organizations to track status of their projects. This project is in initial stage only backend is completed using nodejs 
+
 
 
 ### How to Install the project
