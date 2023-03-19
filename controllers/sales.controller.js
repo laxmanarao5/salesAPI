@@ -8,7 +8,6 @@ const expressAsyncHandler=require("express-async-handler")
 
 const {Op,QueryTypes} =require("sequelize")
 const { sequelize } = require("../database/db.config")
-const { stat } = require("fs")
 
 
 //controller for initialization of database
@@ -33,11 +32,18 @@ exports.statisticsByMonth=expressAsyncHandler(async(req,res)=>{
     //pattern
     let pattern="_____"+month+"%"
     //query
-    let result= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'", { type: QueryTypes.SELECT ,
+    let result= await sequelize.query("select sold,sum(price) as sale_amount,count(title) as total_items from sales where monthname(dateOfSale)='"+month+"' group by sold", { type: QueryTypes.SELECT ,
     model:Sales})
+
+    //Restructuring result
+    let report={
+        sale_amount:result[0].dataValues.sale_amount+result[1].dataValues.sale_amount,
+        no_of_sold_items:result[0].dataValues.total_items,
+        no_of_not_sold_items:result[1].dataValues.total_items
+    }
     
     //send response
-    res.send({message:"Data fetched sucessfully",payload:result})
+    res.send({message:"Data fetched sucessfully",payload:report})
 })
 
 //category - Pie chart
@@ -102,9 +108,15 @@ exports.finalReport=expressAsyncHandler(async(req,res)=>{
     //pattern
     let pattern="_____"+month+"%"
 
-    //running query for Montly report API
-    let montlyreport= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'", { type: QueryTypes.SELECT ,
-    model:Sales})
+    let result= await sequelize.query("select sold,sum(price) as sale_amount,count(title) as total_items from sales where monthname(dateOfSale)='"+month+"' group by sold", { type: QueryTypes.SELECT ,
+        model:Sales})
+    
+        //Restructuring result
+        let report={
+            sale_amount:result[0].dataValues.sale_amount+result[1].dataValues.sale_amount,
+            no_of_sold_items:result[0].dataValues.total_items,
+            no_of_not_sold_items:result[1].dataValues.total_items
+        }
 
     //running query for Pie chart API
     let pieChart= await sequelize.query("select category,count(*) as items from sales where monthname(dateOfSale)='"+month+"' group by category", { type: QueryTypes.SELECT ,
@@ -122,7 +134,7 @@ exports.finalReport=expressAsyncHandler(async(req,res)=>{
     "801-900": 0,
     "900 -above": 0}
 
-    let result= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'", { type: QueryTypes.SELECT ,
+    result= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'", { type: QueryTypes.SELECT ,
         model:Sales})
     
     result.map((obj)=>{
@@ -139,5 +151,6 @@ exports.finalReport=expressAsyncHandler(async(req,res)=>{
     })
     
     //send response
-    res.send({message:"Data fetched sucessfully",payload:{report:montlyreport,pieChart:pieChart,barChart:object}})
+    res.send({message:"Data fetched sucessfully",payload:{monthlyReport:report,pieChart:pieChart,barChart:object}})
 })
+
