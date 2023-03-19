@@ -3,7 +3,7 @@
 
 
 
-### How to Install the project
+### How to Run the project
 Download the git repository manually or clone it by following command
 
 ```
