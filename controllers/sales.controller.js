@@ -63,26 +63,32 @@ exports.statisticsOfItems=expressAsyncHandler(async(req,res)=>{
     let month=req.params.month
     //pattern
     let pattern="_____"+month+"%"
-    let object={}
+    let object={"0-100": 0,
+    "101-200": 0,
+    "201-300": 0,
+    "301-400": 0,
+    "401-500": 0,
+    "501-600": 0,
+    "601-700": 0,
+    "701-800": 0,
+    "801-900": 0,
+    "900 -above": 0}
 
-    //Running queries for all intervals
-    for(let i=0;i<9;i++){
-       let  start=i*100+1
-       if(i==0)
-       start=start-1
-       let end=100+i*100
-
-        //running query
-        let result= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'&& price between "+start+" and "+end, { type: QueryTypes.SELECT ,
+    let result= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'", { type: QueryTypes.SELECT ,
         model:Sales})
-            object[start+"-"+end]=result.length
-            
-        }
-        //running query
-    let result= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'&& price>900", { type: QueryTypes.SELECT ,
-    model:Sales})
-
-    object["900 -above"]=result.length
+    
+    result.map((obj)=>{
+        obj.price<=100?object["0-100"]++:
+        obj.price<=200?object["101-200"]++:
+        obj.price<=300?object["201-300"]++:
+        obj.price<=400?object["301-400"]++:
+        obj.price<=500?object["401-500"]++:
+        obj.price<=600?object["501-600"]++:
+        obj.price<=700?object["601-700"]++:
+        obj.price<=800?object["701-800"]++:
+        obj.price<=900?object["801-900"]++:
+        object["900 -above"]++
+    })
     //send response
     res.send({message:"Data fetched sucessfully",payload:object})
 })
@@ -105,26 +111,32 @@ exports.finalReport=expressAsyncHandler(async(req,res)=>{
         model:Sales})
     
     //Running qqueries for Bar chart
-    //Running queries for all intervals 
-    let object={}
-    for(let i=0;i<9;i++){
-           let  start=i*100+1
-           if(i==0)
-           start=start-1
-           let end=100+i*100
-    
-            let query="select * from sales where monthname(dateOfSale)='"+month+"'&& price between "+start+" and "+end
-                //running query
-            let result= await sequelize.query(query, { type: QueryTypes.SELECT ,
-            model:Sales})
-                object[start+"-"+end]=result.length
-                
-            }
-         //running query
-        result= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'&& price>900", { type: QueryTypes.SELECT ,
+    let object={"0-100": 0,
+    "101-200": 0,
+    "201-300": 0,
+    "301-400": 0,
+    "401-500": 0,
+    "501-600": 0,
+    "601-700": 0,
+    "701-800": 0,
+    "801-900": 0,
+    "900 -above": 0}
+
+    let result= await sequelize.query("select * from sales where monthname(dateOfSale)='"+month+"'", { type: QueryTypes.SELECT ,
         model:Sales})
-        
-        object["900 -above"]=result.length
+    
+    result.map((obj)=>{
+        obj.price<=100?object["0-100"]++:
+        obj.price<=200?object["101-200"]++:
+        obj.price<=300?object["201-300"]++:
+        obj.price<=400?object["301-400"]++:
+        obj.price<=500?object["401-500"]++:
+        obj.price<=600?object["501-600"]++:
+        obj.price<=700?object["601-700"]++:
+        obj.price<=800?object["701-800"]++:
+        obj.price<=900?object["801-900"]++:
+        object["900 -above"]++
+    })
     
     //send response
     res.send({message:"Data fetched sucessfully",payload:{report:montlyreport,pieChart:pieChart,barChart:object}})
