@@ -1,0 +1,14 @@
+GET http://localhost/sales/initialize
+
+
+###
+GET http://localhost/sales/statistics/month/July
+
+###
+GET http://localhost/sales/items/month/July
+
+###
+GET http://localhost/sales/category/month/July
+
+###
+GET http://localhost/sales/sales-report/month/July
