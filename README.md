@@ -23,7 +23,7 @@ then start the server using below command
   nodemon server
 ```
 ### Configurations
-  create ```.env``` file and add the following details to the ```.env``` file
+  ``` create ".env " file and add the following details to the ".env" file
 PORT=PORT_NUMBER
 HOST=HOST_ADDRESS
 DB_NAME=YOUR_DB_NAME
