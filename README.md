@@ -19,7 +19,7 @@ then run the following command to install all the modules that are used in this 
 then start the server using below command
 
 ```
-  nodemon server
+  node server
 ```
 ### Configurations
   ``` create ".env " file and add the following details to the ".env" file
